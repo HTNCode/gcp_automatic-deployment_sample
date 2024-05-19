@@ -1,0 +1,7 @@
+version: "3.9"
+services:
+  api:
+    build: .
+    ports:
+      - "8080:5000" # ホストのポート番号:コンテナンのポート番号でポートを開放して繋ぐ
+    container_name: "deloy-test"
