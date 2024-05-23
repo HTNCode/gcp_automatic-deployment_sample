@@ -5,7 +5,7 @@ steps:
       [
         "build",
         "-t",
-        "gcr.io/$PROJECT_ID/hello:$COMMIT_SHA",
+        "$LOCATION-docker.pkg.dev/$PROJECT_ID/hello:$COMMIT_SHA",
         "-f",
         "server-side/Dockerfile",
         ".",
@@ -14,7 +14,7 @@ steps:
   - name: "gcr.io/cloud-builders/docker"
     args: [
         "push",
-        "asia-northeast1-docker.pkg.dev/$PROJECT_ID/hello:$COMMIT_SHA",
+        "$LOCATION-docker.pkg.dev/$PROJECT_ID/hello/hello:$COMMIT_SHA",
       ] # asia-northeast1-docker.pkg.dev/$PROJECT_ID/hello:$COMMIT_SHAにコンテナをpushする
   # Deploy container image to Cloud Run
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
@@ -24,10 +24,13 @@ steps:
       - "deploy"
       - "hello"
       - "--image"
-      - "gcr.io/$PROJECT_ID/hello:$COMMIT_SHA"
+      - "$LOCATION-docker.pkg.dev/$PROJECT_ID/hello:$COMMIT_SHA"
       - "--region"
-      - "asia-northeast1"
+      - "$LOCATION"
       - "--set-env-vars"
       - "USER_NAME=tarou,USER_AGE=20,USER_ADDRESS=tokyo" # --set-env-varsの後に複数の環境変数を指定可（これがCloudRunにセットされる）
+    env:
+      - "PROJECT_ID=$PROJECT_ID"
+      - "LOCATION=$LOCATION"
 images:
-  - "gcr.io/$PROJECT_ID/hello:$COMMIT_SHA"
+  - "$LOCATION-docker.pkg.dev/$PROJECT_ID/hello:$COMMIT_SHA"
